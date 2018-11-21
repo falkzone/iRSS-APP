@@ -13,7 +13,7 @@
 @synthesize webviewer;
 
 -(IBAction)feedcontrolselection {
-    
+
     if (control.selectedSegmentIndex ==0) {
         // Show feed list - (With simple fade style animation)
         [UIView beginAnimations:@"animateAdBannerOn" context:NULL];
@@ -23,7 +23,7 @@
         barone.alpha = 0.0;
         [UIView commitAnimations];
     }
-    
+
     if (control.selectedSegmentIndex ==1) {
         // Hide feed list - (With simple fade style animation)
         [UIView beginAnimations:@"animateAdBannerOn" context:NULL];
@@ -33,7 +33,7 @@
         barone.alpha = 1.0;
         [UIView commitAnimations];
     }
-    
+
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -45,54 +45,54 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+
 	static NSString *MyIdentifier = @"MyIdentifier";
-    
+
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
 	if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:MyIdentifier];
-        
+
 	}
-    
+
 	// Set up the cell
 	int storyIndex = [indexPath indexAtPosition: [indexPath length] - 1];
-    
+
     // Title text line of UITableView cell (Top line text)
     cell.textLabel.text=[[stories objectAtIndex: storyIndex] objectForKey: @"title"];
-    
+
     // Detail text line of UITableView cell (Bottom line text)
     cell.detailTextLabel.text=[[stories objectAtIndex: storyIndex] objectForKey: @"date"];
-    
+
     // UITableView cell text font
     cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Light" size:17.0];
-    
+
     // UITableView cell text colour
     cell.textLabel.textColor = [UIColor whiteColor];
-    
+
     // UITableView Cell background image (normal)
     cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellv10.png"]];
-    
+
     // UITableView Cell background image (pressed)
     cell.selectedBackgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellv10g.png"]];
-    
+
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+
     int storyIndex = [indexPath indexAtPosition: [indexPath length] - 1];
-    
+
     NSString * storyLink = [[stories objectAtIndex: storyIndex] objectForKey: @"link"];
     NSLog(@"%@",stories );
-    
+
     // clean up the link - get rid of spaces, returns, and tabs...
     storyLink = [storyLink stringByReplacingOccurrencesOfString:@" " withString:@""];
     storyLink = [storyLink stringByReplacingOccurrencesOfString:@"\n" withString:@""];
     storyLink = [storyLink stringByReplacingOccurrencesOfString:@"	" withString:@""];
-    
+
     // View selected feed
     [webviewer loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:storyLink]]];
-    
+
     // Fade in UIWebView - By default the UIWebView is hidden. Once a feed is selected the UiWebView will fade in with a smooth (and minimal) animation.
     [UIView beginAnimations:@"animateAdBannerOn" context:NULL];
     [UIView setAnimationDuration:1.2];
@@ -101,7 +101,7 @@
     barone.alpha = 1.0;
     control.selectedSegmentIndex =1;
     [UIView commitAnimations];
-    
+
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -117,7 +117,7 @@
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    
+
     // Release any cached data, images, etc that aren't in use.
 }
 
@@ -129,30 +129,30 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-    
+
     webviewer.backgroundColor = [UIColor clearColor];
-    
+
     [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkLoad) userInfo:nil repeats:YES];
     [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkNotLoad) userInfo:nil repeats:YES];
-    
+
     // Height of UITableView cell
     self->newsTable.rowHeight = 70;
-    
+
 	if ([stories count] == 0) {
-        
-        
+
+
         ///////////////////////////////////////////////////////////////
-        //////////////////////// RSS FEED URL /////////////////////////
-        
+        //////////////////////// RSS FEED URL Test /////////////////////////
+
 		NSString * path = @"http://feeds.macrumors.com/MacRumors-All";
-        
-        //////////////////////// RSS FEED URL /////////////////////////
+
+        //////////////////////// RSS FEED URL Test /////////////////////////
         ///////////////////////////////////////////////////////////////
-        
-        
+
+
         [self parseXMLFileAtURL:path];
 	}
-	
+
     cellSize = CGSizeMake([newsTable bounds].size.width, 60);
 }
 
@@ -202,15 +202,15 @@
 - (void)parseXMLFileAtURL:(NSString *)URL
 {
 	stories = [[NSMutableArray alloc] init];
-    
+
     //you must then convert the path to a proper NSURL or it won't work
     NSURL *xmlURL = [NSURL URLWithString:URL];
-    
+
     rssParser = [[NSXMLParser alloc] initWithContentsOfURL:xmlURL];
-    
+
     // Set self as the delegate of the parser so that it will receive the parser delegate methods callbacks.
     [rssParser setDelegate:self];
-    
+
     // Depending on the XML document you're parsing, you may want to enable these features of NSXMLParser.
     [rssParser setShouldProcessNamespaces:NO];
     [rssParser setShouldReportNamespacePrefixes:NO];
@@ -226,7 +226,7 @@
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict{
-    
+
 	currentElement = [elementName copy];
 	if ([elementName isEqualToString:@"item"]) {
 		// clear out our story item caches...
@@ -239,9 +239,9 @@
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName{
-	
+
 	if ([elementName isEqualToString:@"item"]) {
-        
+
 		// save values to an item, then store that item into the array...
 		[item setObject:currentTitle forKey:@"title"];
 		[item setObject:currentLink forKey:@"link"];
@@ -253,7 +253,7 @@
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string{
-	
+
 	if ([currentElement isEqualToString:@"title"]) {
 		[currentTitle appendString:string];
 	} else if ([currentElement isEqualToString:@"link"]) {
@@ -268,19 +268,19 @@
 - (void)parserDidEndDocument:(NSXMLParser *)parser {
 	[activityIndicator stopAnimating];
 	[activityIndicator removeFromSuperview];
-    
+
 	NSLog(@"all done!");
-    
+
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	
+
     NSLog(@"stories array has %d items", [stories count]);
-	
+
     [newsTable reloadData];
 }
 
 
 
-//// Developed by Daniel Sadjadian - Developer Links:
+//// Developed by falkzone - Developer Links:
 
 - (IBAction)devlinksbutton {
     devlinks = [[UIAlertView alloc] initWithTitle:@"Developed by Supertecnoboff" message:@"" delegate:self cancelButtonTitle:@"Dismiss" otherButtonTitles:@"iOS Apps", @"Website", @"Twitter", @"YouTube", nil];
@@ -288,25 +288,25 @@
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-	
+
 	if (buttonIndex == 1) {
-		
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.com/apps/supertecnoboffapps"]];
+
+		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.com/apps/"]];
 	}
-	
+
 	if (buttonIndex == 2) {
-		
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://supertecnoboff.co.uk"]];
+
+		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://falkzone.eu"]];
 	}
-	
+
 	if (buttonIndex == 3) {
-		
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://mobile.twitter.com/supertecnoboff"]];
+
+		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://mobile.twitter.com/falkzone"]];
 	}
-	
+
 	if (buttonIndex == 4) {
-		
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://m.youtube.co.uk/supertecnoboff"]];
+
+		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://m.youtube.com"]];
 	}
 }
 
