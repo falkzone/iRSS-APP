@@ -1,2 +1,2 @@
 # iRSS-APP
-RSS APP iOS
+RSS APP implemented in Objective-C for iOS
